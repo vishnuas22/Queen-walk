@@ -1,0 +1,306 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: masterx-quantum
+  labels:
+    name: masterx-quantum
+    environment: production
+    version: "1.0"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: masterx-config
+  namespace: masterx-quantum
+data:
+  # Application Configuration
+  ENVIRONMENT: "production"
+  LOG_LEVEL: "info"
+  
+  # Service Discovery
+  API_GATEWAY_URL: "http://api-gateway-service:8000"
+  ORCHESTRATOR_URL: "http://master-orchestrator-service:8001"
+  QUANTUM_INTELLIGENCE_URL: "http://quantum-intelligence-service:8002"
+  PERSONALIZATION_URL: "http://personalization-service:8003"
+  PREDICTIVE_ANALYTICS_URL: "http://predictive-analytics-service:8004"
+  
+  # Database Configuration
+  POSTGRES_HOST: "postgres-service"
+  POSTGRES_PORT: "5432"
+  POSTGRES_DB: "masterx"
+  
+  # Redis Configuration
+  REDIS_HOST: "redis-service"
+  REDIS_PORT: "6379"
+  
+  # Monitoring Configuration
+  PROMETHEUS_URL: "http://prometheus-service:9090"
+  GRAFANA_URL: "http://grafana-service:3000"
+  
+  # Performance Tuning
+  MAX_WORKERS: "4"
+  WORKER_TIMEOUT: "30"
+  KEEP_ALIVE: "2"
+  
+  # Feature Flags
+  QUANTUM_ENHANCEMENT_ENABLED: "true"
+  PREDICTIVE_ANALYTICS_ENABLED: "true"
+  REAL_TIME_MONITORING_ENABLED: "true"
+  ADVANCED_CACHING_ENABLED: "true"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: masterx-secrets
+  namespace: masterx-quantum
+type: Opaque
+data:
+  # JWT Secret (base64 encoded)
+  JWT_SECRET: eW91ci1zdXBlci1zZWNyZXQtand0LWtleS1oZXJl
+  
+  # Database Credentials (base64 encoded)
+  POSTGRES_USER: cG9zdGdyZXM=
+  POSTGRES_PASSWORD: cGFzc3dvcmQ=
+  
+  # Redis Password (base64 encoded)
+  REDIS_PASSWORD: cmVkaXMtcGFzc3dvcmQ=
+  
+  # API Keys (base64 encoded)
+  OPENAI_API_KEY: eW91ci1vcGVuYWktYXBpLWtleQ==
+  ANTHROPIC_API_KEY: eW91ci1hbnRocm9waWMtYXBpLWtleQ==
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: masterx-service-account
+  namespace: masterx-quantum
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: masterx-quantum
+  name: masterx-role
+rules:
+- apiGroups: [""]
+  resources: ["pods", "services", "endpoints"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["apps"]
+  resources: ["deployments", "replicasets"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources: ["configmaps", "secrets"]
+  verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: masterx-role-binding
+  namespace: masterx-quantum
+subjects:
+- kind: ServiceAccount
+  name: masterx-service-account
+  namespace: masterx-quantum
+roleRef:
+  kind: Role
+  name: masterx-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+  namespace: masterx-quantum
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: fast-ssd
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redis-pvc
+  namespace: masterx-quantum
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: fast-ssd
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: quantum-models-pvc
+  namespace: masterx-quantum
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+  storageClassName: fast-ssd
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: prometheus-pvc
+  namespace: masterx-quantum
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: standard
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: grafana-pvc
+  namespace: masterx-quantum
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+  storageClassName: standard
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: elasticsearch-pvc
+  namespace: masterx-quantum
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 15Gi
+  storageClassName: standard
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: masterx-network-policy
+  namespace: masterx-quantum
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: masterx-quantum
+    - namespaceSelector:
+        matchLabels:
+          name: kube-system
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: masterx-quantum
+    - namespaceSelector:
+        matchLabels:
+          name: kube-system
+  - to: []
+    ports:
+    - protocol: TCP
+      port: 53
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 443
+    - protocol: TCP
+      port: 80
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: api-gateway-pdb
+  namespace: masterx-quantum
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: api-gateway
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: master-orchestrator-pdb
+  namespace: masterx-quantum
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: master-orchestrator
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: quantum-intelligence-pdb
+  namespace: masterx-quantum
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: quantum-intelligence
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: api-gateway-hpa
+  namespace: masterx-quantum
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: api-gateway
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: quantum-intelligence-hpa
+  namespace: masterx-quantum
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: quantum-intelligence
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 80
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 85

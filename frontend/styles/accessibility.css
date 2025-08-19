@@ -1,0 +1,377 @@
+/* Advanced accessibility styles for MasterX */
+
+/* ===== SCREEN READER ONLY ===== */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.sr-only-focusable:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: inherit;
+  margin: inherit;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+/* ===== FOCUS MANAGEMENT ===== */
+.focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Enhanced focus styles for keyboard navigation */
+.keyboard-navigation *:focus {
+  outline: 2px solid #6366f1 !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1) !important;
+}
+
+.keyboard-navigation button:focus,
+.keyboard-navigation input:focus,
+.keyboard-navigation textarea:focus,
+.keyboard-navigation select:focus,
+.keyboard-navigation a:focus {
+  outline: 2px solid #6366f1 !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2) !important;
+}
+
+/* Focus trap indicator */
+[data-focus-trap="true"] {
+  position: relative;
+}
+
+[data-focus-trap="true"]::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border: 2px dashed #6366f1;
+  border-radius: 8px;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* ===== REDUCED MOTION ===== */
+@media (prefers-reduced-motion: reduce) {
+  .reduce-motion *,
+  .reduce-motion *::before,
+  .reduce-motion *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.reduce-motion * {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* ===== HIGH CONTRAST MODE ===== */
+@media (prefers-contrast: high) {
+  .high-contrast {
+    --bg-primary: #000000;
+    --bg-secondary: #1a1a1a;
+    --text-primary: #ffffff;
+    --text-secondary: #e5e5e5;
+    --border-color: #ffffff;
+    --accent-color: #00ff00;
+  }
+}
+
+.high-contrast {
+  background-color: var(--bg-primary, #000000) !important;
+  color: var(--text-primary, #ffffff) !important;
+}
+
+.high-contrast * {
+  background-color: inherit !important;
+  color: inherit !important;
+  border-color: var(--border-color, #ffffff) !important;
+}
+
+.high-contrast button,
+.high-contrast input,
+.high-contrast textarea,
+.high-contrast select {
+  background-color: var(--bg-secondary, #1a1a1a) !important;
+  color: var(--text-primary, #ffffff) !important;
+  border: 2px solid var(--border-color, #ffffff) !important;
+}
+
+.high-contrast a {
+  color: var(--accent-color, #00ff00) !important;
+  text-decoration: underline !important;
+}
+
+.high-contrast .bg-gradient-to-br,
+.high-contrast .bg-gradient-to-r {
+  background: var(--bg-secondary, #1a1a1a) !important;
+}
+
+/* ===== LARGE TEXT MODE ===== */
+.large-text {
+  font-size: 1.25em !important;
+  line-height: 1.6 !important;
+}
+
+.large-text h1 { font-size: 2.5em !important; }
+.large-text h2 { font-size: 2em !important; }
+.large-text h3 { font-size: 1.75em !important; }
+.large-text h4 { font-size: 1.5em !important; }
+.large-text h5 { font-size: 1.25em !important; }
+.large-text h6 { font-size: 1.125em !important; }
+
+.large-text button,
+.large-text input,
+.large-text textarea {
+  font-size: 1.25em !important;
+  padding: 1em !important;
+}
+
+/* ===== SCREEN READER MODE ===== */
+.screen-reader-mode {
+  /* Enhanced spacing for better screen reader navigation */
+}
+
+.screen-reader-mode * {
+  /* Ensure all interactive elements have proper spacing */
+  margin: 0.25em 0 !important;
+}
+
+.screen-reader-mode button,
+.screen-reader-mode input,
+.screen-reader-mode textarea,
+.screen-reader-mode select,
+.screen-reader-mode a {
+  /* Enhanced padding for screen reader users */
+  padding: 0.75em 1em !important;
+  margin: 0.5em 0 !important;
+}
+
+/* ===== SKIP LINKS ===== */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: #6366f1;
+  color: white;
+  padding: 8px;
+  text-decoration: none;
+  border-radius: 4px;
+  z-index: 9999;
+  font-weight: 600;
+  transition: top 0.3s;
+}
+
+.skip-link:focus {
+  top: 6px;
+}
+
+/* ===== ARIA LIVE REGIONS ===== */
+#aria-live-polite,
+#aria-live-assertive {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* ===== ENHANCED BUTTON STATES ===== */
+button[aria-pressed="true"] {
+  background-color: #4f46e5 !important;
+  color: white !important;
+}
+
+button[aria-expanded="true"]::after {
+  content: " (expanded)";
+  font-size: 0.875em;
+  opacity: 0.7;
+}
+
+button[aria-expanded="false"]::after {
+  content: " (collapsed)";
+  font-size: 0.875em;
+  opacity: 0.7;
+}
+
+/* ===== ENHANCED FORM STATES ===== */
+input[aria-invalid="true"],
+textarea[aria-invalid="true"] {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2) !important;
+}
+
+input[aria-required="true"]::after,
+textarea[aria-required="true"]::after {
+  content: " *";
+  color: #ef4444;
+  font-weight: bold;
+}
+
+/* ===== LOADING STATES ===== */
+[aria-busy="true"] {
+  position: relative;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+[aria-busy="true"]::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid #6366f1;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ===== ENHANCED TOOLTIPS ===== */
+[role="tooltip"] {
+  position: absolute;
+  background: #1f2937;
+  color: white;
+  padding: 0.5em 0.75em;
+  border-radius: 4px;
+  font-size: 0.875em;
+  z-index: 1000;
+  max-width: 200px;
+  word-wrap: break-word;
+}
+
+[role="tooltip"]::before {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border: 5px solid transparent;
+  border-top-color: #1f2937;
+}
+
+/* ===== ENHANCED LANDMARKS ===== */
+main[role="main"] {
+  outline: 2px solid transparent;
+}
+
+.keyboard-navigation main[role="main"]:focus {
+  outline: 2px solid #6366f1;
+  outline-offset: 4px;
+}
+
+nav[role="navigation"] {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* ===== ENHANCED HEADINGS ===== */
+h1, h2, h3, h4, h5, h6 {
+  scroll-margin-top: 2rem;
+}
+
+/* ===== ENHANCED LISTS ===== */
+ul[role="list"],
+ol[role="list"] {
+  list-style: none;
+  padding: 0;
+}
+
+li[role="listitem"] {
+  padding: 0.5em 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+li[role="listitem"]:last-child {
+  border-bottom: none;
+}
+
+/* ===== ENHANCED TABLES ===== */
+table[role="table"] {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th[role="columnheader"],
+td[role="cell"] {
+  padding: 0.75em;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+th[role="columnheader"] {
+  background-color: #f9fafb;
+  font-weight: 600;
+}
+
+/* ===== ENHANCED DIALOGS ===== */
+[role="dialog"] {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  z-index: 1000;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: auto;
+}
+
+[role="dialog"]::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+/* ===== RESPONSIVE ACCESSIBILITY ===== */
+@media (max-width: 768px) {
+  .keyboard-navigation *:focus {
+    outline-width: 3px !important;
+    outline-offset: 3px !important;
+  }
+  
+  button, input, textarea, select {
+    min-height: 44px !important;
+    min-width: 44px !important;
+  }
+}
+
+/* ===== PRINT ACCESSIBILITY ===== */
+@media print {
+  .sr-only {
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    clip: auto !important;
+    overflow: visible !important;
+  }
+  
+  [aria-hidden="true"] {
+    display: none !important;
+  }
+}
